@@ -16,6 +16,8 @@ class GroceryList extends StatefulWidget{
 
 class _GroceryListState extends State<GroceryList> {
   List<GroceryItem>_groceryItems = [];
+  var _isLoading = true;
+
 
   @override
   void initState() {   
@@ -40,6 +42,7 @@ class _GroceryListState extends State<GroceryList> {
     } //convert JSON to dart map
     setState(() {
       _groceryItems = loadedItems;
+      _isLoading = false;
     });
   }
 
@@ -64,13 +67,18 @@ class _GroceryListState extends State<GroceryList> {
   @override
   Widget build(BuildContext context) {
     Widget content = const Padding(
-      padding: EdgeInsets.all(30),
-      child: Center(
+      padding: EdgeInsets.fromLTRB(60,30,30,60),
         child: Text(
           "You don't have any grocery item yet.  Please start by adding one."
         ),
-      ),
-    );
+      );
+
+    if (_isLoading) {
+      content = const Center(
+        child: CircularProgressIndicator()
+      );
+    }
+
 
     if (_groceryItems.isNotEmpty) {
       content = ListView.builder(
