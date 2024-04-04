@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shopping_list/data/dummy_items.dart';
 import 'package:shopping_list/widgets/new_item.dart';
+import 'package:shopping_list/models/grocery_item.dart';
+
 
 
 class GroceryList extends StatefulWidget{
@@ -11,14 +12,25 @@ class GroceryList extends StatefulWidget{
 }
 
 class _GroceryListState extends State<GroceryList> {
-  void _addItem() {
-    Navigator.of(context).push(
+  final List<GroceryItem>_groceryItems = [];
+
+  void _addItem() async {
+    final newItem = await Navigator.of(context).push<GroceryItem>(
       MaterialPageRoute(builder: (ctx) => const NewItem()),
     );
+
+    if (newItem == null) {
+      return;
+    }
+  
+    setState((){
+      _groceryItems.add(newItem);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Groceries'),
@@ -29,15 +41,15 @@ class _GroceryListState extends State<GroceryList> {
         ],
       ),
       body: ListView.builder(
-        itemCount: groceryItems.length,
+        itemCount: _groceryItems.length,
         itemBuilder: (ctx, index) => ListTile(
-          title: Text(groceryItems[index].name),
+          title: Text(_groceryItems[index].name),
           leading: Container(
             width: 24,
             height: 24,
-            color: groceryItems[index].category.color,
+            color: _groceryItems[index].category.color,
           ),
-          trailing: Text(groceryItems[index].quantity.toString()),
+          trailing: Text(_groceryItems[index].quantity.toString()),
         )),
     );
   }
